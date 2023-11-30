@@ -18,6 +18,9 @@ public class GetParameters {
     private final Mustache.Compiler compiler;
 
     public List<String> getParameters(Snippet snippet) {
+        if (snippet.getCommand() == null) {
+            return List.of();
+        }
         var template = compiler.compile(snippet.getCommand());
         List<String> parameters = new ArrayList<>();
         template.visit(new Visitor() {
