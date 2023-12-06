@@ -2,6 +2,7 @@ package be.chipit.jet.adapters.home;
 
 import be.chipit.jet.domain.entities.Snippet;
 import be.chipit.jet.domain.ports.ListSnippetsPort;
+import be.chipit.jet.domain.ports.SaveSnippetPort;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class Home implements ListSnippetsPort {
+public class Home implements ListSnippetsPort, SaveSnippetPort {
 
     private JetConfigParser jetConfigParser = new JetConfigParser();
     private JetConfig jetConfig;
@@ -20,6 +21,12 @@ public class Home implements ListSnippetsPort {
     @Override
     public List<Snippet> listAll() {
         return jetConfig.getSnippets();
+    }
+
+    @Override
+    public void save(Snippet snippet) {
+        jetConfig.register(snippet);
+        writeConfigToFile();
     }
 
     @PostConstruct
