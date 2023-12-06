@@ -5,8 +5,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,20 +23,20 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 class JetConfigParser {
     @Setter
-    private Yaml yaml;
+    private ObjectMapper objectMapper;
     @Setter
     private Charset charset = StandardCharsets.UTF_8;
 
     JetConfigParser() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        options.setProcessComments(false);
-        yaml = new Yaml(options);
+        YAMLFactory yamlFactory = new YAMLFactory();
+        yamlFactory.disable(Feature.WRITE_DOC_START_MARKER);
+        objectMapper = new ObjectMapper(yamlFactory);
+        objectMapper.findAndRegisterModules();
     }
 
     JetConfig read(File file) {
         try (var reader = new InputStreamReader(new FileInputStream(file), charset)) {
-            return yaml.loadAs(reader, JetConfig.class);
+            return objectMapper.readValue(reader, JetConfig.class);
         } catch (IOException e) {
             log.error("Error reading config {}", file, e);
             throw new JetException("Could not read config to file", e);
@@ -43,7 +45,7 @@ class JetConfigParser {
 
     void write(File file, JetConfig jetConfig) {
         try (var writer = new OutputStreamWriter(new FileOutputStream(file), charset)) {
-            yaml.dump(jetConfig, writer);
+            objectMapper.writeValue(writer, jetConfig);
         } catch (IOException e) {
             log.error("Error writing config {}", file, e);
             throw new JetException("Could not write config to file", e);
