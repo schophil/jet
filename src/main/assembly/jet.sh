@@ -2,10 +2,11 @@
 
 DIR=$(dirname $(readlink -f $0))
 
+export LOGGING_FILE_NAME=logback-silent.xml
 java -jar $DIR/jet.jar
 
 if [ -f /tmp/jet.command ]; then
     command=$(cat /tmp/jet.command)
     rm /tmp/jet.command
-    $command
+    eval $command
 fi

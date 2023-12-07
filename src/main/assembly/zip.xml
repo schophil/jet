@@ -13,7 +13,7 @@
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>jet.sh</source>
+            <source>src/main/assembly/jet.sh</source>
             <fileMode>744</fileMode>
             <outputDirectory>/</outputDirectory>
         </file>
