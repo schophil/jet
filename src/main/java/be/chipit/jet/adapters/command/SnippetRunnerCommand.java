@@ -1,15 +1,11 @@
 package be.chipit.jet.adapters.command;
 
-import be.chipit.jet.common.JetException;
 import be.chipit.jet.domain.entities.Snippet;
 import be.chipit.jet.domain.usecases.CreateCommand;
 import be.chipit.jet.domain.usecases.GetParameters;
 import be.chipit.jet.domain.usecases.ListSnippets;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.io.IOUtils;
-import org.jline.terminal.Terminal;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.component.SingleItemSelector;
 import org.springframework.shell.component.SingleItemSelector.SingleItemSelectorContext;
@@ -17,12 +13,7 @@ import org.springframework.shell.component.StringInput;
 import org.springframework.shell.component.StringInput.StringInputContext;
 import org.springframework.shell.component.support.SelectorItem;
 import org.springframework.shell.standard.AbstractShellComponent;
-import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,25 +21,36 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Command
-@Component
 @RequiredArgsConstructor
-@Slf4j
-public class ExecuteCommand extends AbstractShellComponent {
+public class SnippetRunnerCommand extends AbstractShellComponent {
 
     private final ListSnippets listSnippets;
     private final GetParameters getParameters;
     private final CreateCommand createCommand;
-    private final Terminal terminal;
+
+    @Command(group = "snippets", alias = "cp", command = "copy", description = "Copy snippet to clipboard")
+    public void copy() {
+        getCommand().ifPresent(command -> {
+            InstructionFiles.writeCopyFile(command);
+            System.exit(0);
+        });
+    }
 
     @Command(group = "snippets", alias = "exec", command = "execute", description = "Execute a snippet")
     public void execute() {
+        getCommand().ifPresent(command -> {
+            InstructionFiles.writeCommandFile(command);
+            System.exit(0);
+        });
+    }
+
+    private Optional<String> getCommand() {
         var snippet = selectSnippet();
         if (snippet.isPresent()) {
             var arguments = collectParameters(snippet.get());
-            String command = createCommand.create(snippet.get(), arguments);
-            witeCommandFile(command);
-            System.exit(0);
+            return Optional.of(createCommand.create(snippet.get(), arguments));
         }
+        return Optional.empty();
     }
 
     private Optional<Snippet> selectSnippet() {
@@ -56,7 +58,7 @@ public class ExecuteCommand extends AbstractShellComponent {
                 .stream()
                 .map(this::createSelectorItem)
                 .toList();
-        SingleItemSelector<Snippet, SelectorItem<Snippet>> component = new SingleItemSelector<>(terminal, items,
+        SingleItemSelector<Snippet, SelectorItem<Snippet>> component = new SingleItemSelector<>(getTerminal(), items,
                 "Select snippet to execute",
                 null);
         component.setResourceLoader(getResourceLoader());
@@ -94,18 +96,5 @@ public class ExecuteCommand extends AbstractShellComponent {
                 snippet.getCommand()
                         .replace("{", "\\{")
                         .replace("}", "\\}"));
-    }
-
-    private void witeCommandFile(String command) {
-        // write command to temporary file
-        try {
-            File tempFile = Path.of(System.getProperty("java.io.tmpdir"), "jet.command").toFile();
-            log.debug("Writing command to {}", tempFile.getAbsolutePath());
-            try (var fout = new FileOutputStream(tempFile)) {
-                IOUtils.write(command, fout, StandardCharsets.UTF_8);
-            }
-        } catch (Exception e) {
-            throw new JetException("Error creating command file", e);
-        }
     }
 }

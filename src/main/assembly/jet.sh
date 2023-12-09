@@ -10,3 +10,10 @@ if [ -f /tmp/jet.command ]; then
     rm /tmp/jet.command
     eval $command
 fi
+
+if [ -f /tmp/jet.copy ]; then
+    command=$(cat /tmp/jet.copy)
+    rm /tmp/jet.copy
+    # echo $command | xclip -selection clipboard
+    echo $command | xsel -i -b
+fi
