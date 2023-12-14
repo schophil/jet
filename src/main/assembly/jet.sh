@@ -8,6 +8,7 @@ java -jar $DIR/jet.jar
 if [ -f /tmp/jet.command ]; then
     command=$(cat /tmp/jet.command)
     rm /tmp/jet.command
+    echo $command
     eval $command
 fi
 
