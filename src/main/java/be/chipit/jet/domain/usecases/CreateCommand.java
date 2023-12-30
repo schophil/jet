@@ -17,13 +17,13 @@ public class CreateCommand {
     private final GetParameters getParameters;
     private final Mustache.Compiler compiler;
 
-    public String create(Snippet snippet, Map<String, Object> parameters) {
+    public String create(Snippet snippet, Map<String, Object> parameterValues) {
         getParameters.getParameters(snippet).forEach(parameter -> {
-            if (!parameters.containsKey(parameter)) {
+            if (!parameterValues.containsKey(parameter)) {
                 throw new JetException("Missing parameter: " + parameter);
             }
         });
         var template = compiler.compile(snippet.getCommand());
-        return template.execute(parameters);
+        return template.execute(parameterValues);
     }
 }
