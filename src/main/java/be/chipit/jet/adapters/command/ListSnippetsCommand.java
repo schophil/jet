@@ -17,6 +17,7 @@ public class ListSnippetsCommand {
     public void execute() {
         listSnippets.list().stream()
                 .forEach(this::printSnippet);
+        terminal.flush();
     }
 
     private void printSnippet(Snippet snippet) {
