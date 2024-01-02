@@ -1,5 +1,6 @@
 package be.chipit.jet.adapters.home;
 
+import be.chipit.jet.common.JetException;
 import be.chipit.jet.domain.entities.Snippet;
 import be.chipit.jet.domain.ports.ListSnippetsPort;
 import be.chipit.jet.domain.ports.SaveSnippetPort;
@@ -33,6 +34,10 @@ public class Home implements ListSnippetsPort, SaveSnippetPort {
     public void initialize() {
         Path path = getPath();
         if (!path.toFile().exists()) {
+            if (!path.toFile().getParentFile().mkdirs()) {
+                log.error("Could not create config directory {}", path.toFile().getParentFile());
+                throw new JetException("Could not create config directory");
+            }
             jetConfig = new JetConfig();
             jetConfig.register(Snippet.builder()
                     .description("Prints Hello World")
@@ -50,6 +55,6 @@ public class Home implements ListSnippetsPort, SaveSnippetPort {
     }
 
     private Path getPath() {
-        return Path.of(System.getProperty("user.home"), ".config", "jet.yml");
+        return Path.of(System.getProperty("user.home"), ".config", "jet", "jet.yml");
     }
 }
