@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GetParametersTest {
 
-    private Mustache.Compiler compiler = Mustache.compiler();
+    private final Mustache.Compiler compiler = Mustache.compiler();
 
     @Test
     @DisplayName("If snippit does not contain parameters, then return empty list")
@@ -23,7 +23,7 @@ class GetParametersTest {
                 .description("Displays hello world")
                 .build();
 
-        List<String> parameters = new GetParameters(compiler).getParameters(snippet);
+        List<String> parameters = new GetParameters(compiler).execute(snippet);
         assertThat(parameters).isEmpty();
     }
 
@@ -35,7 +35,7 @@ class GetParametersTest {
                 .description("Displays item")
                 .build();
 
-        List<String> parameters = new GetParameters(compiler).getParameters(snippet);
+        List<String> parameters = new GetParameters(compiler).execute(snippet);
         assertThat(parameters).containsExactlyInAnyOrder("item", "value");
     }
 
@@ -46,7 +46,7 @@ class GetParametersTest {
                 .description("Displays item")
                 .build();
 
-        List<String> parameters = new GetParameters(compiler).getParameters(snippet);
+        List<String> parameters = new GetParameters(compiler).execute(snippet);
         assertThat(parameters).isEmpty();
     }
 }

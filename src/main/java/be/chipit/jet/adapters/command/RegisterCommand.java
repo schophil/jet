@@ -24,7 +24,7 @@ public class RegisterCommand extends AbstractShellComponent {
     @Command(command = "add", group = "snippets", description = "Add snippet")
     public void execute() {
         Map<String, String> parameters = collectParameters();
-        registerSnippet.register(parameters.get("command"), parameters.get("description"));
+        registerSnippet.execute(parameters.get("command"), parameters.get("description"));
     }
 
     private Map<String, String> collectParameters() {

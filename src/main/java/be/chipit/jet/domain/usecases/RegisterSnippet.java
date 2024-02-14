@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class RegisterSnippet {
     private final SaveSnippetPort saveSnippetPort;
 
-    public Snippet register(String command, String description) {
+    public Snippet execute(String command, String description) {
         Snippet snippet = Snippet.builder()
                 .command(command)
                 .description(description)

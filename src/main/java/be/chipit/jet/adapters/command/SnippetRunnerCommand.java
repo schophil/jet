@@ -5,10 +5,7 @@ import be.chipit.jet.domain.usecases.CreateCommand;
 import be.chipit.jet.domain.usecases.GetParameters;
 import be.chipit.jet.domain.usecases.ListSnippets;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.shell.command.annotation.Command;
-import org.springframework.shell.component.SingleItemSelector;
-import org.springframework.shell.component.SingleItemSelector.SingleItemSelectorContext;
 import org.springframework.shell.component.StringInput;
 import org.springframework.shell.component.StringInput.StringInputContext;
 import org.springframework.shell.component.support.SelectorItem;
@@ -48,35 +45,28 @@ public class SnippetRunnerCommand extends AbstractShellComponent {
         var snippet = selectSnippet();
         if (snippet.isPresent()) {
             var arguments = collectParameters(snippet.get());
-            return Optional.of(createCommand.create(snippet.get(), arguments));
+            return Optional.of(createCommand.execute(snippet.get(), arguments));
         }
         return Optional.empty();
     }
 
     private Optional<Snippet> selectSnippet() {
-        List<SelectorItem<Snippet>> items = listSnippets.list()
-                .stream()
-                .map(this::createSelectorItem)
-                .toList();
-        SingleItemSelector<Snippet, SelectorItem<Snippet>> component = new SingleItemSelector<>(getTerminal(), items,
-                "Select snippet to execute",
-                null);
-        component.setResourceLoader(getResourceLoader());
-        component.setTemplateExecutor(getTemplateExecutor());
-        component.setItemMapper(Snippet::getDescription);
-        SingleItemSelectorContext<Snippet, SelectorItem<Snippet>> context = component
-                .run(SingleItemSelectorContext.empty());
-        return context.getResultItem().map(SelectorItem::getItem);
+        return SnippetSelector.builder()
+            .templateExecutor(getTemplateExecutor())
+            .terminal(getTerminal())
+            .resourceLoader(getResourceLoader())
+            .build()
+            .selectSnippet("Select snippet to execute", listSnippets::execute);
     }
 
     private Map<String, Object> collectParameters(Snippet snippet) {
-        List<String> parameters = getParameters.getParameters(snippet);
+        List<String> parameters = getParameters.execute(snippet);
         if (parameters.isEmpty()) {
             return Map.of();
         }
         return parameters.stream()
-                .map(parameter -> Map.entry(parameter, collectParameter(parameter)))
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+            .map(parameter -> Map.entry(parameter, collectParameter(parameter)))
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 
     private String collectParameter(String parameter) {
@@ -93,8 +83,8 @@ public class SnippetRunnerCommand extends AbstractShellComponent {
 
     private String getDisplayString(Snippet snippet) {
         return String.format("%s [ %s ]", snippet.getDescription(),
-                snippet.getCommand()
-                        .replace("{", "\\{")
-                        .replace("}", "\\}"));
+            snippet.getCommand()
+                .replace("{", "\\{")
+                .replace("}", "\\}"));
     }
 }

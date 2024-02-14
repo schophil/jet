@@ -17,8 +17,8 @@ public class CreateCommand {
     private final GetParameters getParameters;
     private final Mustache.Compiler compiler;
 
-    public String create(Snippet snippet, Map<String, Object> parameterValues) {
-        getParameters.getParameters(snippet).forEach(parameter -> {
+    public String execute(Snippet snippet, Map<String, Object> parameterValues) {
+        getParameters.execute(snippet).forEach(parameter -> {
             if (!parameterValues.containsKey(parameter)) {
                 throw new JetException("Missing parameter: " + parameter);
             }

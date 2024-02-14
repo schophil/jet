@@ -28,11 +28,11 @@ class CreateCommandTest {
         var snippet = Snippet.builder()
                 .command("echo {{name}}")
                 .build();
-        when(getParameters.getParameters(snippet)).thenReturn(List.of("name"));
+        when(getParameters.execute(snippet)).thenReturn(List.of("name"));
 
         var createCommand = new CreateCommand(getParameters, Mustache.compiler());
 
-        assertThat(createCommand.create(snippet, Map.of("name", "Jet"))).isEqualTo("echo Jet");
+        assertThat(createCommand.execute(snippet, Map.of("name", "Jet"))).isEqualTo("echo Jet");
     }
 
     @Test
@@ -40,12 +40,12 @@ class CreateCommandTest {
         var snippet = Snippet.builder()
                 .command("echo {{name}}")
                 .build();
-        when(getParameters.getParameters(snippet)).thenReturn(List.of("name"));
+        when(getParameters.execute(snippet)).thenReturn(List.of("name"));
 
         var createCommand = new CreateCommand(getParameters, Mustache.compiler());
 
         Map<String, Object> context = Map.of("names", "Jet");
-        assertThatThrownBy(() -> createCommand.create(snippet, context))
+        assertThatThrownBy(() -> createCommand.execute(snippet, context))
                 .isInstanceOf(JetException.class);
     }
 }

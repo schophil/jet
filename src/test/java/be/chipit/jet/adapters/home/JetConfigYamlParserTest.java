@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JetConfigParserTest {
+class JetConfigYamlParserTest {
     @Test
     void readCommandWithQuotes() throws IOException {
         String content = """
@@ -23,7 +23,7 @@ class JetConfigParserTest {
         tempFile.deleteOnExit();
         FileUtils.writeStringToFile(tempFile, content, StandardCharsets.UTF_8);
 
-        JetConfigParser parser = new JetConfigParser();
+        JetConfigYamlParser parser = new JetConfigYamlParser();
         JetConfig jetConfig = parser.read(tempFile);
 
         assertThat(jetConfig).isNotNull();
@@ -44,7 +44,7 @@ class JetConfigParserTest {
         tempFile.deleteOnExit();
         FileUtils.writeStringToFile(tempFile, content, StandardCharsets.UTF_8);
 
-        JetConfigParser parser = new JetConfigParser();
+        JetConfigYamlParser parser = new JetConfigYamlParser();
         JetConfig jetConfig = parser.read(tempFile);
 
         assertThat(jetConfig).isNotNull();

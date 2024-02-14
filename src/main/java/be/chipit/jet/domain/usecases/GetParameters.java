@@ -17,7 +17,7 @@ public class GetParameters {
 
     private final Mustache.Compiler compiler;
 
-    public List<String> getParameters(Snippet snippet) {
+    public List<String> execute(Snippet snippet) {
         if (snippet.getCommand() == null) {
             return List.of();
         }

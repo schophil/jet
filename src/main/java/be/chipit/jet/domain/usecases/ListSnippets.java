@@ -14,7 +14,7 @@ public class ListSnippets {
 
     private final ListSnippetsPort listSnippetsPort;
 
-    public List<Snippet> list() {
+    public List<Snippet> execute() {
         return listSnippetsPort.listAll();
     }
 }
