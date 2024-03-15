@@ -15,6 +15,9 @@ fi
 if [ -f /tmp/jet.copy ]; then
     command=$(cat /tmp/jet.copy)
     rm /tmp/jet.copy
-    # echo $command | xclip -selection clipboard
-    echo $command | xsel -i -b
+    if command -v xsl >/dev/null 2>&1; then
+        echo $command | xsel -i -b
+    elif command -v wl-copy >/dev/null 2>&1; then
+        echo $command | wl-copy
+    fi
 fi
