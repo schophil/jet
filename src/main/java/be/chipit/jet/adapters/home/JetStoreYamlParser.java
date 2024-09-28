@@ -22,11 +22,11 @@ import java.nio.charset.StandardCharsets;
 @Setter
 @Component
 @Slf4j
-public class JetConfigYamlParser implements JetConfigParser {
+public class JetStoreYamlParser implements JetStoreParser {
     private ObjectMapper objectMapper;
     private Charset charset = StandardCharsets.UTF_8;
 
-    public JetConfigYamlParser() {
+    public JetStoreYamlParser() {
         YAMLFactory yamlFactory = new YAMLFactory();
         yamlFactory.disable(Feature.WRITE_DOC_START_MARKER);
         objectMapper = new ObjectMapper(yamlFactory);
@@ -34,9 +34,9 @@ public class JetConfigYamlParser implements JetConfigParser {
     }
 
     @Override
-    public JetConfig read(File file) {
+    public JetStore read(File file) {
         try (var reader = new InputStreamReader(new FileInputStream(file), charset)) {
-            return objectMapper.readValue(reader, JetConfig.class);
+            return objectMapper.readValue(reader, JetStore.class);
         } catch (IOException e) {
             log.error("Error reading config {}", file, e);
             throw new JetException("Could not read config to file", e);
@@ -44,12 +44,12 @@ public class JetConfigYamlParser implements JetConfigParser {
     }
 
     @Override
-    public void write(File file, JetConfig jetConfig) {
+    public void write(File file, JetStore jetStore) {
         try (var writer = new OutputStreamWriter(new FileOutputStream(file), charset)) {
-            objectMapper.writeValue(writer, jetConfig);
+            objectMapper.writeValue(writer, jetStore);
         } catch (IOException e) {
-            log.error("Error writing config {}", file, e);
-            throw new JetException("Could not write config to file", e);
+            log.error("Error writing store {}", file, e);
+            throw new JetException("Could not write store to file", e);
         }
     }
 }

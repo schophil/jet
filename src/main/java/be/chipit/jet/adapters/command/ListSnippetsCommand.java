@@ -15,8 +15,7 @@ public class ListSnippetsCommand {
 
     @Command(command = "list", group = "snippets", description = "List snippets")
     public void execute() {
-        listSnippets.execute().stream()
-                .forEach(this::printSnippet);
+        listSnippets.execute().forEach(this::printSnippet);
         terminal.flush();
     }
 
