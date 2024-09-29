@@ -16,6 +16,7 @@ public class EncryptSnippet {
             return snippet;
         }
         snippet.setCommand(cryptoService.encrypt(snippet.getCommand(), password, salt));
+        snippet.setDescription(cryptoService.encrypt(snippet.getDescription(), password, salt));
         snippet.setEncrypted(true);
         return snippet;
     }
