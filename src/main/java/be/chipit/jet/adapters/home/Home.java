@@ -70,10 +70,10 @@ public class Home implements ListSnippetsPort, SaveSnippetPort, DeleteSnippetPor
     }
 
     protected void beforeStorage(JetStore jetStore) {
-        jetStore.getSnippets().forEach(snippet -> encryptSnippet.execute(snippet, jetStore.getPassword(), jetStore.getSalt()));
+        jetStore.getSnippets().forEach(snippet -> encryptSnippet.execute(snippet, jetStore.getPassword()));
     }
 
     protected void afterStorage(JetStore jetStore) {
-        jetStore.getSnippets().forEach(snippet -> decryptSnippet.execute(snippet, jetStore.getPassword(), jetStore.getSalt()));
+        jetStore.getSnippets().forEach(snippet -> decryptSnippet.execute(snippet, jetStore.getPassword()));
     }
 }

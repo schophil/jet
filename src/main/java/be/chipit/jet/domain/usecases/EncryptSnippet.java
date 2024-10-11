@@ -11,12 +11,12 @@ public class EncryptSnippet {
 
     private final CryptoService cryptoService;
 
-    public Snippet execute(Snippet snippet, String password, String salt) {
+    public Snippet execute(Snippet snippet, String password) {
         if (snippet.isEncrypted()) {
             return snippet;
         }
-        snippet.setCommand(cryptoService.encrypt(snippet.getCommand(), password, salt));
-        snippet.setDescription(cryptoService.encrypt(snippet.getDescription(), password, salt));
+        snippet.setCommand(cryptoService.encrypt(snippet.getCommand(), password));
+        snippet.setDescription(cryptoService.encrypt(snippet.getDescription(), password));
         snippet.setEncrypted(true);
         return snippet;
     }

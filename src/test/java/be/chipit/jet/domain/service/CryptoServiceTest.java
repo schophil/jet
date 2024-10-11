@@ -14,12 +14,12 @@ class CryptoServiceTest {
         String value = "test";
         String password = "password";
         String salt = "salt";
-        String encryptedValue = cryptoService.encrypt(value, password, salt);
+        String encryptedValue = cryptoService.encrypt(value, password);
 
         log.info("Value: {} - Encrypted: {}", value, encryptedValue);
         assertNotEquals(value, encryptedValue);
 
-        String decryptedValue = cryptoService.decrypt(encryptedValue, password, salt);
+        String decryptedValue = cryptoService.decrypt(encryptedValue, password);
         assertEquals(value, decryptedValue);
     }
 }

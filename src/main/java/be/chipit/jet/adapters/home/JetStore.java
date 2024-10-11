@@ -27,7 +27,6 @@ public class JetStore {
 
     private List<Snippet> snippets = new ArrayList<>();
     private String version = "1";
-    private String salt;
     @JsonIgnore
     private boolean isNew = false;
     @JsonIgnore

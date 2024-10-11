@@ -22,12 +22,10 @@ public class OpenCommand extends AbstractShellComponent {
         if (jetStore.isNew()) {
             String password = collectPassword("Creating new snippet store, please enter password for new store:");
             jetStore.setPassword(password);
-            jetStore.setSalt(RandomStringUtils.randomAlphanumeric(16));
             home.writeConfigToFile();
         } else if (JetStore.VERSION_1.equals(jetStore.getVersion())) {
             String password = collectPassword("Upgrading store, please enter password for snippet store:");
             jetStore.setPassword(password);
-            jetStore.setSalt(RandomStringUtils.randomAlphanumeric(16));
             jetStore.setVersion(JetStore.LATEST_VERSION);
             home.writeConfigToFile();
         } else {
@@ -35,7 +33,7 @@ public class OpenCommand extends AbstractShellComponent {
             jetStore.setPassword(password);
             jetStore.getSnippets().forEach(snippet -> {
                 snippet.setEncrypted(true);
-                decryptSnippet.execute(snippet, jetStore.getPassword(), jetStore.getSalt());
+                decryptSnippet.execute(snippet, jetStore.getPassword());
             });
         }
     }
