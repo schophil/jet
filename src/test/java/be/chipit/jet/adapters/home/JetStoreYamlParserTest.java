@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JetConfigYamlParserTest {
+class JetStoreYamlParserTest {
     @Test
     void readCommandWithQuotes() throws IOException {
         String content = """
@@ -23,11 +23,11 @@ class JetConfigYamlParserTest {
         tempFile.deleteOnExit();
         FileUtils.writeStringToFile(tempFile, content, StandardCharsets.UTF_8);
 
-        JetConfigYamlParser parser = new JetConfigYamlParser();
-        JetConfig jetConfig = parser.read(tempFile);
+        JetStoreYamlParser parser = new JetStoreYamlParser();
+        JetStore jetStore = parser.read(tempFile);
 
-        assertThat(jetConfig).isNotNull();
-        assertThat(jetConfig.getSnippets()).containsOnly(Snippet.builder()
+        assertThat(jetStore).isNotNull();
+        assertThat(jetStore.getSnippets()).containsOnly(Snippet.builder()
                 .description("Prints Hello World")
                 .command("echo \"hello world\"")
                 .build());
@@ -44,11 +44,11 @@ class JetConfigYamlParserTest {
         tempFile.deleteOnExit();
         FileUtils.writeStringToFile(tempFile, content, StandardCharsets.UTF_8);
 
-        JetConfigYamlParser parser = new JetConfigYamlParser();
-        JetConfig jetConfig = parser.read(tempFile);
+        JetStoreYamlParser parser = new JetStoreYamlParser();
+        JetStore jetStore = parser.read(tempFile);
 
-        assertThat(jetConfig).isNotNull();
-        assertThat(jetConfig.getSnippets()).containsOnly(Snippet.builder()
+        assertThat(jetStore).isNotNull();
+        assertThat(jetStore.getSnippets()).containsOnly(Snippet.builder()
                 .description("Prints Hello World")
                 .command("echo \"hello world\"")
                 .build());

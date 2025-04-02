@@ -1,8 +1,11 @@
 package be.chipit.jet.adapters.home;
 
+import be.chipit.jet.domain.usecases.DecryptSnippet;
+import be.chipit.jet.domain.usecases.EncryptSnippet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
@@ -17,7 +20,7 @@ import static org.mockito.Mockito.*;
 class HomeTest {
 
     @Mock
-    private JetConfigParser jetConfigParser;
+    private JetStoreParser jetStoreParser;
 
     @Test
     void initializeNewConfig() {
@@ -26,10 +29,10 @@ class HomeTest {
         File tempFile = path.toFile();
         tempFile.deleteOnExit();
 
-        Home home = new Home(jetConfigParser, path);
-        home.initialize();
+        Home home = new Home(jetStoreParser, path, Mockito.mock(DecryptSnippet.class), Mockito.mock(EncryptSnippet.class));
+        home.readOrCreateNew();
 
-        verify(jetConfigParser, times(1)).write(tempFile, JetConfig.createNew());
+        verify(jetStoreParser, never()).write(tempFile, JetStore.createNew());
     }
 
     @Test
@@ -41,12 +44,12 @@ class HomeTest {
         assertThat(tempFile.createNewFile()).isTrue();
         tempFile.deleteOnExit();
 
-        when(jetConfigParser.read(tempFile)).thenReturn(JetConfig.createNew());
+        when(jetStoreParser.read(tempFile)).thenReturn(JetStore.createNew());
 
-        Home home = new Home(jetConfigParser, path);
-        home.initialize();
+        Home home = new Home(jetStoreParser, path, Mockito.mock(DecryptSnippet.class), Mockito.mock(EncryptSnippet.class));
+        home.readOrCreateNew();
 
-        verify(jetConfigParser, times(1)).read(tempFile);
+        verify(jetStoreParser, times(1)).read(tempFile);
 
         assertThat(home.listAll()).hasSize(1);
     }
