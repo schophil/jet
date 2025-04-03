@@ -17,5 +17,10 @@
             <fileMode>744</fileMode>
             <outputDirectory>/</outputDirectory>
         </file>
+        <file>
+            <source>src/main/assembly/jet-command.sh</source>
+            <fileMode>744</fileMode>
+            <outputDirectory>/</outputDirectory>
+        </file>
     </files>
 </assembly>

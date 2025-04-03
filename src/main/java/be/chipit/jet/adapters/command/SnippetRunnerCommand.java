@@ -27,10 +27,7 @@ public class SnippetRunnerCommand extends AbstractShellComponent {
 
     @Command(group = "snippets", alias = "cp", command = "copy", description = "Copy snippet to clipboard")
     public void copy() {
-        getCommand().ifPresent(command -> {
-            InstructionFiles.writeCopyFile(command);
-            System.exit(0);
-        });
+        getCommand().ifPresent(InstructionFiles::executeCopy);
     }
 
     @Command(group = "snippets", alias = "exec", command = "execute", description = "Execute a snippet")
