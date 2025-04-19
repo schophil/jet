@@ -1,8 +1,8 @@
 #!/bin/bash
 
-DIR=$(dirname $(readlink -f $0))
+DIR=$(dirname "$(readlink -f "$0")")
 
 export LOGGING_FILE_NAME=logback-silent.xml
-java -Dapp.bin=$DIR -jar $DIR/jet.jar
+java -Dapp.bin="$DIR" -jar "$DIR"/jet.jar
 
-./jet-command.sh
+"$DIR"/jet-command.sh
